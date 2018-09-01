@@ -54,7 +54,3 @@ django-conditional-views uses pytest.  To run tests:
 
   $ pytest
 
-
-This is `Python you see`_.
-
-.. _`Python you see`: http://www.python.org/
