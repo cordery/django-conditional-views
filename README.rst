@@ -1,6 +1,10 @@
 Django Conditional Views
 ########################
 
+.. image:: https://readthedocs.org/projects/django-conditional-views/badge/?version=latest
+  :target: https://django-conditional-views.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
+
 Simple Etag and Last-Modified mixins for class based views.
 
 Getting Started
