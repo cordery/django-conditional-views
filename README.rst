@@ -29,7 +29,7 @@ See the documentation for more details.
 Documentation
 =============
 
-Documentation is available at
+Documentation is available at `readthedocs <https://django-conditional-views.readthedocs.io/en/latest/>`_
 
 
 Contributing
