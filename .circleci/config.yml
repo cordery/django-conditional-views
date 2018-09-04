@@ -28,11 +28,17 @@ jobs:
           - v1-dependencies-
 
       - run:
+          name: Update PYTHONPATH and Define Environment Variable at Runtime
+          command: |
+            echo 'export PYTHONPATH=$CIRCLE_WORKING_DIRECTORY/src' >> $BASH_ENV
+            source $BASH_ENV
+
+      - run:
           name: install dependencies
           command: |
-            pip3 install -r poetry
             python3 -m venv venv
             . venv/bin/activate
+            pip3 install poetry
             poetry install -v
 
       - save_cache:
@@ -48,6 +54,7 @@ jobs:
       - run:
           name: run tests
           command: |
+            . venv/bin/activate
             poetry run pytest
 
       - store_artifacts:
