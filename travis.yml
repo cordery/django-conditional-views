@@ -1,0 +1,13 @@
+language: python
+python:
+  - "3.6"
+  - "3.7"
+# command to install dependencies
+install:
+  - pip install poetry
+  - poetry install -v
+# command to run tests
+script:
+  - poetry run pytest
+env:
+  - PYTHONPATH=$TRAVIS_BUILD_DIR/src
