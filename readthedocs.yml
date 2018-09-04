@@ -8,3 +8,4 @@ python:
   setup_py_install: false
    pip_install: true
 
+requirements_file: docs/requirements.readthedocs.txt
