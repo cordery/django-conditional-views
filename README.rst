@@ -5,7 +5,40 @@ Django Conditional Views
   :target: https://django-conditional-views.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
-Simple Etag and Last-Modified mixins for class based views.
+Simple ETag and Last-Modified mixins for class based views.
+
+
+What is Django Conditional Views?
+==================================
+
+Django Conditional Views builds off of the built in `django conditional view processing`_ machinery
+to provide simple mixins for class based views that implement support for the ETag and Last-Modified
+conditional request headers.
+
+.. _django conditional view processing: https://docs.djangoproject.com/en/2.1/topics/conditional-view-processing/
+
+
+Features
+========
+
+Inherit one of these mixins to make your TemplateView's, DetailView's, or ListView's:
+
+  1. Calculate and append ETag and/or Last-Modified headers to the response and;
+
+  2. Respond with a `304 Not Modified`_ or a `412 Precondition Failed`_ to requests that provide conditional response headers such as If-Modified-Since
+
+.. _304 Not Modified: https://tools.ietf.org/html/rfc7232#section-4.1
+.. _412 Precondition Failed: https://tools.ietf.org/html/rfc7232#section-4.2
+
+**Helpful Defaults**
+  * ETags are automatically generated from the response.content.
+  * ETag generation can be customized both before and after the response is rendered.
+  * The Last Modified header is automatically set from the last modified timestamp of the template.
+  * In the case of the DetailView and ListView mixins, the Last Modified header may also be
+    configured to get the last modification timestamp from a field on the model, in which case
+    the lastest of that or the template's last modified timestamp will be used.
+
+
 
 Getting Started
 ===============
@@ -24,13 +57,11 @@ Then inherit from one of the following mixins in your views:
 * ConditionalGetListViewMixin - Inherits from ListView
 * ConditionalGetDetailViewMixin - Inherits from DetailView
 
-See the documentation for more details.
+See the Usage_ and API_ sections of the documentation_ for more details.
 
-Documentation
-=============
-
-Documentation is available at `readthedocs <https://django-conditional-views.readthedocs.io/en/latest/>`_
-
+.. _Usage: https://django-conditional-views.readthedocs.io/en/latest/usage.html
+.. _API: https://django-conditional-views.readthedocs.io/en/latest/api.html
+.. _documentation: https://django-conditional-views.readthedocs.io/en/latest/
 
 Contributing
 ============

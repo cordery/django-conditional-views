@@ -1,7 +1,6 @@
 import hashlib
 import os
 from datetime import datetime
-from pathlib import Path
 
 import pytest
 from pytz import UTC
@@ -14,7 +13,8 @@ def template_name(tmpdir):
 
 @pytest.fixture
 def template_on_disk(template_name):
-    Path(template_name).touch()
+    with open(template_name, 'w') as fp:
+        fp.write('Test')
     return template_name
 
 

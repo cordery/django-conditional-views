@@ -1,61 +1,111 @@
 import hashlib
-import os
 from calendar import timegm
 from datetime import datetime
-from typing import ClassVar, Optional, Union
+from functools import partial
+from typing import ClassVar, Optional, Type, Union
 
-from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpRequest, HttpResponse
-from django.template.loader import select_template
 from django.template.response import SimpleTemplateResponse
 from django.utils.cache import get_conditional_response
-from django.utils.http import http_date, parse_http_date_safe, quote_etag
+from django.utils.http import http_date, quote_etag
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateResponseMixin, View
+
+from .elements.base import BaseElement
+from .elements.etag import RenderedContentEtag
+from .elements.last_modified import ObjectLastModified, QuerySetLastModified, TemplateLastModified
+from .helpers import instantiate
 
 __all__ = ['ConditionalGetMixin', 'ConditionalGetTemplateViewMixin',
            'ConditionalGetDetailViewMixin', 'ConditionalGetListViewMixin']
 
 
 class ConditionalGetMixin(View):
+    # language=rst prefix="    "
     """Conditional Request/Response aware mixin for View
 
-    If a request is made with conditional request headers, such as HTTP_IF_MODIFIED_SINCE or
-    HTTP_IF_NONE_MATCH, the conditional request will be evaluated by
-    django.utils.cache.get_conditional_response_.
+    If a request is made with conditional request headers, such as If-Modified-Since_ or
+    If-None-Match_, the conditional request will be evaluated by
+    `django.utils.cache.get_conditional_response`_.
 
     If the condition of the request is met then then normal view response will be returned, and the
     Etag and Last-Modified headers will be set if those values could be computed.
 
-    If the condition of the request is NOT met then either a `304 Not Modified`_ or a `412
-    Precondition Failed`_ response will be returned instead.
+    If the condition of the request is NOT met then either a `304 Not Modified`_ or
+    a `412 Precondition Failed`_ response will be returned instead.
 
+    .. _If-Modified-Since: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified
+    -Since
+    .. _If-None-Match: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match
     .. _django.utils.cache.get_conditional_response:
-       https://github.com/django/django/blob/master/django/utils/cache.py#L134
+    https://github.com/django/django/blob/master/django/utils/cache.py#L134
     .. _304 Not Modified: https://tools.ietf.org/html/rfc7232#section-4.1
     .. _412 Precondition Failed: https://tools.ietf.org/html/rfc7232#section-4.2
+
     """
 
-    def get_pre_render_etag(self) -> Optional[str]:
-        """Override to derive an Etag before the response is rendered.
-
-        Can potentially save a call to dispatch.
-
-        :return: The calculated etag or ''
-        """
-        return ''
+    last_modified_elements: ClassVar[Union[BaseElement, Type[BaseElement]]] = None
+    pre_render_etag_elements: ClassVar[Union[BaseElement, Type[BaseElement]]] = None
+    post_render_etag_elements: ClassVar[Union[BaseElement, Type[BaseElement]]] = None
 
     def get_last_modified(self) -> Optional[datetime]:
-        """Override to derive a Last-Modified datetime.
+        # language=rst prefix="    "
+        """Derive a Last-Modified datetime for the view.
 
         Can potentially save a call to dispatch.
 
         :return: A datetime representing the last time the view content was modified, or None.
         """
-        return None
+        if not self.last_modified_elements:
+            return None
+
+        elements = [x(self) for x in instantiate(self.last_modified_elements)]
+        elements = [x for x in elements if x]
+        if not elements:
+            return None
+
+        return max(elements)
+
+    def get_pre_render_etag(self) -> Optional[str]:
+        # language=rst prefix="    "
+        """Derive an ETag before the response is rendered.
+
+        Can potentially save a call to dispatch.
+
+        :return: The calculated ETag or ''
+        """
+        if not self.pre_render_etag_elements:
+            return None
+
+        elements = [x(self) for x in instantiate(self.pre_render_etag_elements)]
+        return self._render_etag_elements(elements)
+
+    def get_post_render_etag(self, response: SimpleTemplateResponse) -> Optional[str]:
+        # language=rst prefix="    "
+        """Derive an Etag after the response is rendered.
+
+        :return: The calculated ETag or None
+        """
+        if not isinstance(response, SimpleTemplateResponse):
+            return None
+
+        if not self.post_render_etag_elements:
+            return None
+
+        elements = [x(self, response) for x in instantiate(self.post_render_etag_elements)]
+        return self._render_etag_elements(elements)
+
+    @staticmethod
+    def _render_etag_elements(elements):
+        elements = [x for x in elements if x]
+        elements = [x.encode() if isinstance(x, str) else x for x in elements]
+        if not elements:
+            return None
+        return hashlib.md5(b''.join(elements)).hexdigest()
 
     def set_response_headers(self, response: SimpleTemplateResponse, etag: str = None,
                              last_modified: Union[int, datetime] = None) -> SimpleTemplateResponse:
+        # language=rst prefix="    "
         """Sets the Etag and Last-Modified headers on the response
 
         Override if you want to change the final headers.
@@ -75,6 +125,7 @@ class ConditionalGetMixin(View):
         return response
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # language=rst prefix="    "
         """Conditional Request/Response aware wrapper for dispatch.
 
         Calls get_last_modified and get_pre_render_etag to compute the Last-Modified and Etag
@@ -84,24 +135,53 @@ class ConditionalGetMixin(View):
         If a 304 or 412 response will be sent the super().dispatch method will never be called,
         so any computation or side effects done there will not happen.
 
-        If not, the original response will
-        be returned along with Etag and Last-Modified headers if those values were returned by
-        get_last_modified and get_pre_render_etag.
-        """
-        last_modified = self._get_last_modified()
+        Otherwise, the response will be rendered and get_post_render_etag will be called to try to
+        get a post_render etag.  Once again this will be compared against any conditional request
+        headers to determine whether to send a 304 or 412 response.
 
-        # Try to get an etag from the pre_render_etag method
-        etag = self._prepare_etag(self.get_pre_render_etag())
+        If no conditional response will be sent, the Last-Modified and Etag headers for the
+        current response are set and the response is returned.
+        """
+        last_modified = self._format_last_modified(self.get_last_modified())
+
+        # 1. Try to get an etag from the pre_render_etag method
+        etag = self._format_etag(self.get_pre_render_etag())
+
+        # 2. Try to generate a conditional response given the last_modified and pre_render_etag.
+        # If possible, return an abbreviated conditional response using the last_modified and
+        # pre_render_etag instead of proceeding with dispatch.
+        conditional_response = self._get_conditional_response(request, etag, last_modified)
+        if conditional_response:
+            return conditional_response
+
+        # 3. call the super dispatch
+        response = super().dispatch(request, *args, **kwargs)
+        response = self.set_response_headers(response, etag=etag, last_modified=last_modified)
+
+        # 4. Add a post render callback for post render etag generation
+        if hasattr(response, 'add_post_render_callback'):
+            response.add_post_render_callback(
+                partial(self._post_render_callback, request, last_modified)
+            )
+
+        return response
+
+    def _post_render_callback(self, request, last_modified, response):
+        # 1. If we do not yet have an etag, try to get one from the post_render_etag method
+        etag = response.get('ETag')
+        if not etag and not response.streaming:
+            etag = self._format_etag(self.get_post_render_etag(response))
+
+        # 2. Once again try to generate a conditional response given the last_modified and
+        # pre_render_etag.
         conditional_response = self._get_conditional_response(request, etag,
                                                               last_modified)
         if conditional_response:
-            # Return an abbreviated conditional response instead of proceeding with
-            #  dispatch.
             return conditional_response
 
-        response = super().dispatch(request, *args, **kwargs)
-
-        return self.set_response_headers(response, etag=etag, last_modified=last_modified)
+        # 3. Finally set the Etag headers
+        response = self.set_response_headers(response, etag=etag, last_modified=last_modified)
+        return response
 
     def _get_conditional_response(self, request, etag, last_modified):
         """Mimics ConditionalGetMiddleware"""
@@ -111,99 +191,51 @@ class ConditionalGetMixin(View):
             last_modified=last_modified,
         )
 
-    def _prepare_etag(self, etag):
+    def _format_etag(self, etag: Optional[str]):
         """Formats the results of get_post_render_etag"""
-        self._etag = etag
         if not etag:
             return None
         return quote_etag(etag)
 
-    def _get_last_modified(self):
+    def _format_last_modified(self, last_modified: Optional[datetime]):
         """Formats the results of get_last_modified"""
-        res_last_modified = self.get_last_modified()
-        if res_last_modified:
-            res_last_modified = timegm(res_last_modified.utctimetuple())
-        return res_last_modified
+        if not last_modified:
+            return None
+        return timegm(last_modified.utctimetuple())
 
 
 class ConditionalGetTemplateViewMixin(TemplateResponseMixin, ConditionalGetMixin):
+    # language=rst prefix="    "
     """
     Conditional Request/Response aware mixin for TemplateView
 
-    Builds on ConditionalGetViewMixin further adding the following:
-    * By default, Last modified will be automatically set to the last modified timestamp of the
-    template file.
-    * A new method has been added -- get_post_render_etag -- that provides a way to derive the
-    etag from the rendered response.  By default, this method hashes the response.content to
-    derive the etag.
+    *Last-Modified:*  Calculated from the the template last modified timestamp.
+
+    *Etag:* Calculated from the rendered response.
     """
-
-    def get_template_last_modified(self) -> datetime:
-        """Stats the template file to get the last modified time."""
-        t = select_template(self.get_template_names())
-        local_tz = datetime.now().astimezone().tzinfo
-        return datetime.fromtimestamp(os.stat(t.origin.name).st_mtime,
-                                      tz=local_tz)
-
-    def get_last_modified(self) -> datetime:
-        """Calls self.get_template_last_modified()"""
-        return self.get_template_last_modified()
-
-    def get_post_render_etag(self, response: SimpleTemplateResponse) -> str:
-        """Override to derive an etag after the response was rendered.
-
-        No time is saved except the time it would take to transmit the request.
-
-        :param response: A response on which the .render() method has already been called.
-        :return: the etag string
-        """
-        return hashlib.md5(response.content).hexdigest()
-
-    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        response = super().dispatch(request, *args, *kwargs)
-        if not isinstance(response, SimpleTemplateResponse):
-            return response
-        last_modified = parse_http_date_safe(response.get('Last-Modified'))
-        etag = response.get('Etag', None)
-        # If we do not yet have an etag, try to get one from the post_render_etag method
-        if not etag and not response.streaming:
-            response = response.render()
-            etag = self._prepare_etag(self.get_post_render_etag(response))
-
-        conditional_response = self._get_conditional_response(request, etag,
-                                                              last_modified)
-        if conditional_response:
-            return conditional_response
-        # Finally set the Etag headers if required and return the
-        # response
-        return self.set_response_headers(response, etag=etag)
+    last_modified_elements = [TemplateLastModified]
+    post_render_etag_elements = [RenderedContentEtag]
 
 
 class ConditionalGetDetailViewMixin(ConditionalGetTemplateViewMixin, DetailView):
+    # language=rst prefix="    "
     """Conditional Request/Response aware mixin for DetailView
 
-    Builds on ConditionalGetTemplateViewMixin further adding the following:
-    * a configurable last_modified_field class property with which you can name which field on
-    the model
-    should be used to find the last modified date.
-    * By default, Last modified will return the contents of the last_modified_field from the
-    model instance.
+    *Last-Modified:*  Calculated from the latest of the template last modified timestamp and a
+    configurable field on the model object, default 'modified'.
 
+    *Etag:* Calculated from the rendered response.
     """
     last_modified_field: ClassVar[str] = 'modified'
 
-    def get_last_modified(self) -> Optional[datetime]:
-        """Returns the value of last_modified_field on the model instance."""
-        self.object = self.get_object()
-        if not hasattr(self.model, self.last_modified_field):
-            raise ImproperlyConfigured(
-                f"{self.model} does not have a field named {self.last_modified_field}.  Update "
-                f"your view definition and set the last_modified_field property"
-            )
-        last_modified = getattr(self.object, self.last_modified_field)
-        if last_modified:
-            return max(last_modified, self.get_template_last_modified())
-        return None
+    post_render_etag_elements = [RenderedContentEtag]
+
+    def get_last_modified(self):
+        # TemplateLastModified requires that object exist
+        self.object = super().get_object()
+        self.last_modified_elements = [TemplateLastModified,
+                                       ObjectLastModified(self.last_modified_field)]
+        return super().get_last_modified()
 
     def get_object(self, queryset=None):
         """Wraps get_object to use the existing object if it has already been retrieved."""
@@ -213,25 +245,26 @@ class ConditionalGetDetailViewMixin(ConditionalGetTemplateViewMixin, DetailView)
 
 
 class ConditionalGetListViewMixin(ConditionalGetTemplateViewMixin, ListView):
+    # language=rst prefix="    "
     """Conditional Request/Response aware mixin for ListView
 
-       Builds on ConditionalGetTemplateViewMixin further adding the following:
-       * a configurable last_modified_field class property with which you can name which field on
-       the model should be used to find the last modified date.
-       * By default, Last modified will be the latest value of last_modified_field in the queryset.
+    *Last-Modified:*  Calculated from the latest of the template last modified timestamp and the
+    model objects 'modified' field.
 
-       """
+    *Etag:* Calculated from the rendered response.
+    """
     last_modified_field: ClassVar[str] = 'modified'
+    post_render_etag_elements = [RenderedContentEtag]
 
-    def get_last_modified(self) -> Optional[datetime]:
-        self.object_list = self.get_queryset()
-        if not hasattr(self.model, self.last_modified_field):
-            raise ImproperlyConfigured(
-                f"{self.model} does not have a field named {self.last_modified_field}.  Update "
-                f"your view definition and set the last_modified_field property"
-            )
-        last_modified = self.get_queryset().order_by('-' + self.last_modified_field) \
-            .values_list(self.last_modified_field, flat=True).first()
-        if last_modified:
-            return max(last_modified, self.get_template_last_modified())
-        return None
+    def get_last_modified(self):
+        # TemplateLastModified requires that object_list exist
+        self.object_list = super().get_queryset()
+        self.last_modified_elements = [TemplateLastModified,
+                                       QuerySetLastModified(self.last_modified_field)]
+        return super().get_last_modified()
+
+    def get_queryset(self):
+        """Wrapper for get_queryset that caches the queryset."""
+        if not hasattr(self, 'object_list'):
+            self.object_list = super().get_queryset()
+        return self.object_list

@@ -28,7 +28,6 @@ version = ''
 # The full version, including alpha/beta/rc tags
 release = '0.1.0'
 
-
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -73,7 +72,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -85,7 +83,15 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'github_user': 'cordery',
+    'github_repo': 'django-conditional-views',
+    'github_button': True,
+    'github_banner': True,
+    'codecov_button': True,
+    'travis_button':True
+
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -107,7 +113,6 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'DjangoConditionalViewsdoc'
-
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -137,7 +142,6 @@ latex_documents = [
      'Andrew Cordery', 'manual'),
 ]
 
-
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
@@ -146,7 +150,6 @@ man_pages = [
     (master_doc, 'djangoconditionalviews', 'Django Conditional Views Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -158,6 +161,5 @@ texinfo_documents = [
      author, 'DjangoConditionalViews', 'One line description of project.',
      'Miscellaneous'),
 ]
-
 
 # -- Extension configuration -------------------------------------------------

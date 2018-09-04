@@ -15,7 +15,7 @@ class SimpleView(ConditionalGetMixin, View):
         return HttpResponse()
 
 
-class SimpleEtagView(SimpleView):
+class SimpleETagView(SimpleView):
     def get_pre_render_etag(self):
         return 'test_etag'
 

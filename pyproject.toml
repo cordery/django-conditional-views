@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "Simple Etag and Last-Modified mixins for class based views."
 authors = ["Andrew Cordery <cordery@gmail.com>"]
 license = "MIT"
+homepage="https://github.com/cordery/django-conditional-views"
+repository="git@github.com:cordery/django-conditional-views.git"
+documentation="https://django-conditional-views.readthedocs.io/en/latest/"
 
 [tool.poetry.dependencies]
 python = "^3.6"
