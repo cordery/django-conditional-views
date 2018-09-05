@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Update PYTHONPATH and Define Environment Variable at Runtime
           command: |
-            echo 'export PYTHONPATH=$CIRCLE_WORKING_DIRECTORY/src' >> $BASH_ENV
+            echo 'export PYTHONPATH=$CIRCLE_WORKING_DIRECTORY/src;$CIRCLE_WORKING_DIRECTORY/tests' >> $BASH_ENV
             source $BASH_ENV
 
       - run:
@@ -38,6 +38,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
+            pip3 install -U pip setuptools wheel
             pip3 install poetry
             poetry install -v
 
