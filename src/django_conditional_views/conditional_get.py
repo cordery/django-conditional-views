@@ -34,11 +34,12 @@ class ConditionalGetMixin(View):
     If the condition of the request is NOT met then either a `304 Not Modified`_ or
     a `412 Precondition Failed`_ response will be returned instead.
 
-    .. _If-Modified-Since: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified
-    -Since
-    .. _If-None-Match: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match
+    .. _If-Modified-Since:
+        https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-Modified-Since
+    .. _If-None-Match:
+        https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/If-None-Match
     .. _django.utils.cache.get_conditional_response:
-    https://github.com/django/django/blob/master/django/utils/cache.py#L134
+        https://github.com/django/django/blob/master/django/utils/cache.py#L134
     .. _304 Not Modified: https://tools.ietf.org/html/rfc7232#section-4.1
     .. _412 Precondition Failed: https://tools.ietf.org/html/rfc7232#section-4.2
 
