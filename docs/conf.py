@@ -89,8 +89,6 @@ html_theme_options = {
     'github_button': True,
     'github_banner': True,
     'codecov_button': True,
-    'travis_button':True
-
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

@@ -1,6 +1,9 @@
 Django Conditional Views
 ########################
 
+.. image:: https://circleci.com/gh/cordery/django-conditional-views.svg?style=svg
+    :target: https://circleci.com/gh/cordery/django-conditional-views
+
 .. image:: https://readthedocs.org/projects/django-conditional-views/badge/?version=latest
   :target: https://django-conditional-views.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
