@@ -55,6 +55,7 @@ jobs:
       - run:
           name: run tests
           command: |
+            source $BASH_ENV
             . venv/bin/activate
             poetry run pytest
 
