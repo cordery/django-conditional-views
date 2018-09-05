@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Update PYTHONPATH and Define Environment Variable at Runtime
           command: |
-            echo 'export PYTHONPATH=$CIRCLE_WORKING_DIRECTORY/src;$CIRCLE_WORKING_DIRECTORY/tests' >> $BASH_ENV
+            echo 'export PYTHONPATH="$CIRCLE_WORKING_DIRECTORY/src;$CIRCLE_WORKING_DIRECTORY/tests"' >> $BASH_ENV
             source $BASH_ENV
 
       - run:
