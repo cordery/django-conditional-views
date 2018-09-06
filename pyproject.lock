@@ -1,5 +1,5 @@
 [[package]]
-category = "dev"
+category = "main"
 description = "A configurable sidebar-enabled Sphinx theme"
 name = "alabaster"
 optional = true
@@ -26,7 +26,7 @@ python-versions = "*"
 version = "18.2.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Internationalization utilities"
 name = "babel"
 optional = true
@@ -38,7 +38,7 @@ version = "2.6.0"
 pytz = ">=0a"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
 optional = true
@@ -47,7 +47,7 @@ python-versions = "*"
 version = "2018.8.24"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
 optional = true
@@ -56,7 +56,7 @@ python-versions = "*"
 version = "3.0.4"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Cross-platform colored terminal text."
 name = "colorama"
 optional = false
@@ -89,7 +89,7 @@ version = "2.1.1"
 pytz = "*"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
 optional = true
@@ -98,7 +98,7 @@ python-versions = "*"
 version = "0.14"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = true
@@ -107,7 +107,7 @@ python-versions = "*"
 version = "2.7"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Getting image size from png/jpeg/jpeg2000/gif file"
 name = "imagesize"
 optional = true
@@ -116,7 +116,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.1.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "A small but fast and easy to use stand-alone template engine written in pure python."
 name = "jinja2"
 optional = true
@@ -128,7 +128,7 @@ version = "2.10"
 MarkupSafe = ">=0.23"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Implements a XML/HTML/XHTML Markup safe string for Python"
 name = "markupsafe"
 optional = true
@@ -149,7 +149,7 @@ version = "4.3.0"
 six = ">=1.0.0,<2.0.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Core utilities for Python packages"
 name = "packaging"
 optional = true
@@ -180,7 +180,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.6.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Pygments is a syntax highlighting package written in Python."
 name = "pygments"
 optional = false
@@ -189,7 +189,7 @@ python-versions = "*"
 version = "2.2.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python parsing module"
 name = "pyparsing"
 optional = true
@@ -266,7 +266,7 @@ python-versions = "*"
 version = "2018.5"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python HTTP for Humans."
 name = "requests"
 optional = true
@@ -281,7 +281,7 @@ idna = ">=2.5,<2.8"
 urllib3 = ">=1.21.1,<1.24"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python 2 and 3 compatibility utilities"
 name = "six"
 optional = false
@@ -290,7 +290,7 @@ python-versions = "*"
 version = "1.11.0"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "This package provides 16 stemmer algorithms (15 + Poerter English stemmer) generated from Snowball algorithms."
 name = "snowballstemmer"
 optional = true
@@ -299,7 +299,7 @@ python-versions = "*"
 version = "1.2.1"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Python documentation generator"
 name = "sphinx"
 optional = true
@@ -326,7 +326,7 @@ platform = "win32"
 version = ">=0.3.5"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Type hints (PEP 484) support for the Sphinx autodoc extension"
 name = "sphinx-autodoc-typehints"
 optional = true
@@ -338,7 +338,7 @@ version = "1.3.0"
 Sphinx = ">=1.4"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "Sphinx API for Web Apps"
 name = "sphinxcontrib-websupport"
 optional = true
@@ -363,7 +363,7 @@ six = ">=1.0.0,<2"
 virtualenv = ">=1.11.2"
 
 [[package]]
-category = "dev"
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = true
@@ -381,10 +381,10 @@ python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
 version = "16.0.0"
 
 [extras]
-docs = []
+docs = ["sphinx", "sphinx-autodoc-typehints"]
 
 [metadata]
-content-hash = "4166ec9702f330f61c5a71e30bfb77d8e6aef3e8e2d975ed4794ac6795fa290c"
+content-hash = "a72bca4b6de110912f2d39b5133b49b6b6960977f8f011b23a79a02758bfadee"
 platform = "*"
 python-versions = "^3.6"
 
