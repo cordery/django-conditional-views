@@ -2,7 +2,7 @@
 category = "dev"
 description = "A configurable sidebar-enabled Sphinx theme"
 name = "alabaster"
-optional = false
+optional = true
 platform = "*"
 python-versions = "*"
 version = "0.7.11"
@@ -29,7 +29,7 @@ version = "18.2.0"
 category = "dev"
 description = "Internationalization utilities"
 name = "babel"
-optional = false
+optional = true
 platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.6.0"
@@ -41,7 +41,7 @@ pytz = ">=0a"
 category = "dev"
 description = "Python package for providing Mozilla's CA Bundle."
 name = "certifi"
-optional = false
+optional = true
 platform = "*"
 python-versions = "*"
 version = "2018.8.24"
@@ -50,7 +50,7 @@ version = "2018.8.24"
 category = "dev"
 description = "Universal encoding detector for Python 2 and 3"
 name = "chardet"
-optional = false
+optional = true
 platform = "*"
 python-versions = "*"
 version = "3.0.4"
@@ -92,7 +92,7 @@ pytz = "*"
 category = "dev"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
-optional = false
+optional = true
 platform = "OS-independent"
 python-versions = "*"
 version = "0.14"
@@ -101,7 +101,7 @@ version = "0.14"
 category = "dev"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
-optional = false
+optional = true
 platform = "*"
 python-versions = "*"
 version = "2.7"
@@ -110,7 +110,7 @@ version = "2.7"
 category = "dev"
 description = "Getting image size from png/jpeg/jpeg2000/gif file"
 name = "imagesize"
-optional = false
+optional = true
 platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.1.0"
@@ -119,7 +119,7 @@ version = "1.1.0"
 category = "dev"
 description = "A small but fast and easy to use stand-alone template engine written in pure python."
 name = "jinja2"
-optional = false
+optional = true
 platform = "*"
 python-versions = "*"
 version = "2.10"
@@ -131,7 +131,7 @@ MarkupSafe = ">=0.23"
 category = "dev"
 description = "Implements a XML/HTML/XHTML Markup safe string for Python"
 name = "markupsafe"
-optional = false
+optional = true
 platform = "UNKNOWN"
 python-versions = "*"
 version = "1.0"
@@ -152,7 +152,7 @@ six = ">=1.0.0,<2.0.0"
 category = "dev"
 description = "Core utilities for Python packages"
 name = "packaging"
-optional = false
+optional = true
 platform = "*"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "17.1"
@@ -192,7 +192,7 @@ version = "2.2.0"
 category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
-optional = false
+optional = true
 platform = "UNKNOWN"
 python-versions = "*"
 version = "2.2.0"
@@ -269,7 +269,7 @@ version = "2018.5"
 category = "dev"
 description = "Python HTTP for Humans."
 name = "requests"
-optional = false
+optional = true
 platform = "*"
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "2.19.1"
@@ -293,7 +293,7 @@ version = "1.11.0"
 category = "dev"
 description = "This package provides 16 stemmer algorithms (15 + Poerter English stemmer) generated from Snowball algorithms."
 name = "snowballstemmer"
-optional = false
+optional = true
 platform = "UNKNOWN"
 python-versions = "*"
 version = "1.2.1"
@@ -302,7 +302,7 @@ version = "1.2.1"
 category = "dev"
 description = "Python documentation generator"
 name = "sphinx"
-optional = false
+optional = true
 platform = "any"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.7.9"
@@ -329,7 +329,7 @@ version = ">=0.3.5"
 category = "dev"
 description = "Type hints (PEP 484) support for the Sphinx autodoc extension"
 name = "sphinx-autodoc-typehints"
-optional = false
+optional = true
 platform = "*"
 python-versions = "!=3.5.0, !=3.5.1"
 version = "1.3.0"
@@ -341,19 +341,10 @@ Sphinx = ">=1.4"
 category = "dev"
 description = "Sphinx API for Web Apps"
 name = "sphinxcontrib-websupport"
-optional = false
+optional = true
 platform = "any"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.1.0"
-
-[[package]]
-category = "dev"
-description = "Python Library for Tom's Obvious, Minimal Language"
-name = "toml"
-optional = false
-platform = "*"
-python-versions = "*"
-version = "0.9.4"
 
 [[package]]
 category = "dev"
@@ -375,7 +366,7 @@ virtualenv = ">=1.11.2"
 category = "dev"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
-optional = false
+optional = true
 platform = "*"
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
 version = "1.23"
@@ -389,8 +380,11 @@ platform = "*"
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
 version = "16.0.0"
 
+[extras]
+docs = []
+
 [metadata]
-content-hash = "589a47a727affa32df990ecb4a4bab2ab7769d3e1848cde0e7d7e2e787316a12"
+content-hash = "4166ec9702f330f61c5a71e30bfb77d8e6aef3e8e2d975ed4794ac6795fa290c"
 platform = "*"
 python-versions = "^3.6"
 
@@ -426,7 +420,6 @@ snowballstemmer = ["919f26a68b2c17a7634da993d91339e288964f93c274f1343e3bbbe2096e
 sphinx = ["217a7705adcb573da5bbe1e0f5cab4fa0bd89fd9342c9159121746f593c2d5a4", "a602513f385f1d5785ff1ca420d9c7eb1a1b63381733b2f0ea8188a391314a86"]
 sphinx-autodoc-typehints = ["1a9df6cb3ba72453ea4bfbe96ea887abc0d796b2ce9508c2189217a1bb69b366", "46cc9e985ee6d8bbbd07fffd95b815c39a72df6afb600f59671f85f7340e7d0d"]
 sphinxcontrib-websupport = ["68ca7ff70785cbe1e7bccc71a48b5b6d965d79ca50629606c7861a21b206d9dd", "9de47f375baf1ea07cdb3436ff39d7a9c76042c10a769c52353ec46e4e8fc3b9"]
-toml = ["8e86bd6ce8cc11b9620cb637466453d94f5d57ad86f17e98a98d1f73e3baab2d"]
 tox = ["37cf240781b662fb790710c6998527e65ca6851eace84d1595ee71f7af4e85f7", "eb61aa5bcce65325538686f09848f04ef679b5cd9b83cc491272099b28739600"]
 urllib3 = ["a68ac5e15e76e7e5dd2b8f94007233e01effe3e50e8daddf69acfd81cb686baf", "b5725a0bd4ba422ab0e66e89e030c806576753ea3ee08554382c14e685d117b5"]
 virtualenv = ["2ce32cd126117ce2c539f0134eb89de91a8413a29baac49cbab3eb50e2026669", "ca07b4c0b54e14a91af9f34d0919790b016923d157afda5efdde55c96718f752"]

@@ -6,5 +6,7 @@ build:
 python:
   version: 3.6
   pip_install: true
+  extra_requirements:
+    - docs
 
 requirements_file: docs/requirements.readthedocs.txt

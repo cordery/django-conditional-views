@@ -1,16 +1,21 @@
 [tool.poetry]
 name = "django_conditional_views"
-version = "0.1.2"
+version = "0.1.3"
 description = "Simple Etag and Last-Modified mixins for class based views."
 authors = ["Andrew Cordery <cordery@gmail.com>"]
 license = "MIT"
-homepage="https://github.com/cordery/django-conditional-views"
-repository="git@github.com:cordery/django-conditional-views.git"
+homepage = "https://github.com/cordery/django-conditional-views"
+repository = "git@github.com:cordery/django-conditional-views.git"
 documentation="https://django-conditional-views.readthedocs.io/en/latest/"
+readme = "README.rst"
+keywords = ["Django","Last-Modified", "http", "conditional requests", "ETag"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
 django = "^2.1"
+sphinx = { version="^1.7", optional = true }
+sphinx-autodoc-typehints = { version="^1.3", optional = true }
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.7"
@@ -19,7 +24,7 @@ pytest-pythonpath = "^0.7.3"
 pytest-cov = "^2.5"
 coverage = "^4.5"
 pygments = "^2.2"
-sphinx = "^1.7"
 tox = "^3.2"
-sphinx-autodoc-typehints = "^1.3"
-toml = "^0.9.4"
+
+[tool.poetry.extras]
+docs = ["sphinx", "sphinx-autodoc-typehints", "pygments"]

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+# This file exists for readthedocs
+
 import setuptools
 
 package_dir = {'': 'src'}
@@ -9,14 +12,13 @@ package_data = {'': ['*']}
 
 install_requires = ['django>=2.1,<3.0']
 
-with open("README.rst", "r") as fh:
-    long_description = fh.read()
+extras_require = \
+    {u'docs': ['sphinx-autodoc-typehints>=1.3,<2.0', 'sphinx>=1.7,<2.0']}
 
 setuptools.setup(
     name='django-conditional-views',
-    version='0.1.2',
+    version='0.1.3',
     description='Simple Etag and Last-Modified mixins for class based views.',
-    long_description=long_description,
     author='Andrew Cordery',
     author_email='cordery@gmail.com',
     url='https://github.com/cordery/django-conditional-views',
@@ -24,6 +26,7 @@ setuptools.setup(
     packages=packages,
     package_data=package_data,
     install_requires=install_requires,
+    extras_require=extras_require,
     python_requires='>=3.6,<4.0',
     classifiers=[
         "Framework :: Django",
