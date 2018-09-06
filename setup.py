@@ -14,7 +14,7 @@ with open("README.rst", "r") as fh:
 
 setuptools.setup(
     name='django-conditional-views',
-    version='0.1.1',
+    version='0.1.2',
     description='Simple Etag and Last-Modified mixins for class based views.',
     long_description=long_description,
     author='Andrew Cordery',

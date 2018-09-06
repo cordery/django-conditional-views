@@ -1,4 +1,4 @@
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 from .views import *
 from .elements import etag as etag_elements, last_modified as last_modified_elements
