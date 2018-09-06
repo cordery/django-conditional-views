@@ -1,6 +1,8 @@
 __version__ = '0.1.0'
 
-from .conditional_get import *
+from .views import *
+from .elements import etag as etag_elements, last_modified as last_modified_elements
 
 __all__ = [__version__, 'ConditionalGetMixin', 'ConditionalGetTemplateViewMixin',
-           'ConditionalGetDetailViewMixin', 'ConditionalGetListViewMixin']
+           'ConditionalGetDetailViewMixin', 'ConditionalGetListViewMixin', 'etag_elements',
+           'last_modified_elements']

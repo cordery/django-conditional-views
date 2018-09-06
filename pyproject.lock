@@ -204,7 +204,7 @@ name = "pytest"
 optional = false
 platform = "unix"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "3.7.4"
+version = "3.8.0"
 
 [package.dependencies]
 atomicwrites = ">=1.0"
@@ -243,6 +243,18 @@ version = "3.4.2"
 
 [package.dependencies]
 pytest = ">=3.6"
+
+[[package]]
+category = "dev"
+description = "Thin-wrapper around the mock package for easier use with py.test"
+name = "pytest-mock"
+optional = false
+platform = "any"
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "1.10.0"
+
+[package.dependencies]
+pytest = ">=2.7"
 
 [[package]]
 category = "dev"
@@ -305,7 +317,7 @@ name = "sphinx"
 optional = false
 platform = "any"
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.7.8"
+version = "1.7.9"
 
 [package.dependencies]
 Jinja2 = ">=2.3"
@@ -381,7 +393,7 @@ python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
 version = "16.0.0"
 
 [metadata]
-content-hash = "fde4d73c77e8ae962709f788c82260577d14dd9e06e9a6c5753238286bb51dda"
+content-hash = "aae6c369617d5eba6ea7e85e89b374d4f3b07f1c0f67be650e2e1725d6fe906f"
 platform = "*"
 python-versions = "^3.6"
 
@@ -406,15 +418,16 @@ pluggy = ["6e3836e39f4d36ae72840833db137f7b7d35105079aee6ec4a62d9f80d594dd1", "9
 py = ["06a30435d058473046be836d3fc4f27167fd84c45b99704f2fb5509ef61f9af1", "50402e9d1c9005d759426988a492e0edaadb7f4e68bcddfea586bc7432d009c6"]
 pygments = ["78f3f434bcc5d6ee09020f92ba487f95ba50f1e3ef83ae96b9d5ffa1bab25c5d", "dbae1046def0efb574852fab9e90209b23f556367b5a320c0bcb871c77c3e8cc"]
 pyparsing = ["0832bcf47acd283788593e7a0f542407bd9550a55a8a8435214a1960e04bcb04", "281683241b25fe9b80ec9d66017485f6deff1af5cde372469134b56ca8447a07", "8f1e18d3fd36c6795bb7e02a39fd05c611ffc2596c1e0d995d34d67630426c18", "9e8143a3e15c13713506886badd96ca4b579a87fbdf49e550dbfc057d6cb218e", "b8b3117ed9bdf45e14dcc89345ce638ec7e0e29b2b579fa1ecf32ce45ebac8a5", "e4d45427c6e20a59bf4f88c639dcc03ce30d193112047f94012102f235853a58", "fee43f17a9c4087e7ed1605bd6df994c6173c1e977d7ade7b651292fab2bd010"]
-pytest = ["2d7c49e931316cc7d1638a3e5f54f5d7b4e5225972b3c9838f3584788d27f349", "ad0c7db7b5d4081631e0155f5c61b80ad76ce148551aaafe3a718d65a7508b18"]
+pytest = ["453cbbbe5ce6db38717d282b758b917de84802af4288910c12442984bde7b823", "a8a07f84e680482eb51e244370aaf2caa6301ef265f37c2bdefb3dd3b663f99d"]
 pytest-cov = ["513c425e931a0344944f84ea47f3956be0e416d95acbd897a44970c8d926d5d7", "e360f048b7dae3f2f2a9a4d067b2dd6b6a015d384d1577c994a43f3f7cbad762"]
 pytest-django = ["2d2e0a618d91c280d463e90bcbea9b4e417609157f611a79685b1c561c4c0836", "59683def396923b78d7e191a7086a48193f8d5db869ace79acb38f906522bc7b"]
+pytest-mock = ["53801e621223d34724926a5c98bd90e8e417ce35264365d39d6c896388dcc928", "d89a8209d722b8307b5e351496830d5cc5e192336003a485443ae9adeb7dd4c0"]
 pytest-pythonpath = ["63fc546ace7d2c845c1ee289e8f7a6362c2b6bae497d10c716e58e253e801d62"]
 pytz = ["a061aa0a9e06881eb8b3b2b43f05b9439d6583c206d0a6c340ff72a7b6669053", "ffb9ef1de172603304d9d2819af6f5ece76f2e85ec10692a524dd876e72bf277"]
 requests = ["63b52e3c866428a224f97cab011de738c36aec0185aa91cfacd418b5d58911d1", "ec22d826a36ed72a7358ff3fe56cbd4ba69dd7a6718ffd450ff0e9df7a47ce6a"]
 six = ["70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9", "832dc0e10feb1aa2c68dcc57dbb658f1c7e65b9b61af69048abc87a2db00a0eb"]
 snowballstemmer = ["919f26a68b2c17a7634da993d91339e288964f93c274f1343e3bbbe2096e1128", "9f3bcd3c401c3e862ec0ebe6d2c069ebc012ce142cce209c098ccb5b09136e89"]
-sphinx = ["a07050845cc9a2f4026a6035cc8ed795a5ce7be6528bbc82032385c10807dfe7", "d719de667218d763e8fd144b7fcfeefd8d434a6201f76bf9f0f0c1fa6f47fcdb"]
+sphinx = ["217a7705adcb573da5bbe1e0f5cab4fa0bd89fd9342c9159121746f593c2d5a4", "a602513f385f1d5785ff1ca420d9c7eb1a1b63381733b2f0ea8188a391314a86"]
 sphinx-autodoc-typehints = ["1a9df6cb3ba72453ea4bfbe96ea887abc0d796b2ce9508c2189217a1bb69b366", "46cc9e985ee6d8bbbd07fffd95b815c39a72df6afb600f59671f85f7340e7d0d"]
 sphinxcontrib-websupport = ["68ca7ff70785cbe1e7bccc71a48b5b6d965d79ca50629606c7861a21b206d9dd", "9de47f375baf1ea07cdb3436ff39d7a9c76042c10a769c52353ec46e4e8fc3b9"]
 tox = ["37cf240781b662fb790710c6998527e65ca6851eace84d1595ee71f7af4e85f7", "eb61aa5bcce65325538686f09848f04ef679b5cd9b83cc491272099b28739600"]

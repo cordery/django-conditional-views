@@ -31,16 +31,16 @@ class ObjectLastModified(BaseLastModifiedElement):
     """Returns the value of a configurable last modified field on the model instance."""
     view_class = SingleObjectMixin
 
-    def __init__(self, last_modified_field: str):
+    def __init__(self, last_modified_field: str = 'modified'):
         self.last_modified_field = last_modified_field
 
     def value(self, view: SingleObjectMixin) -> Optional[datetime.datetime]:
-        view.object = view.get_object()
+        obj = view.get_object()
         if not hasattr(view.model, self.last_modified_field):
             raise ImproperlyConfigured(
                 f"{view.model} does not have a field named {self.last_modified_field}."
             )
-        return getattr(view.object, self.last_modified_field)
+        return getattr(obj, self.last_modified_field)
 
 
 class QuerySetLastModified(BaseLastModifiedElement):
@@ -48,7 +48,7 @@ class QuerySetLastModified(BaseLastModifiedElement):
 
     view_class = MultipleObjectMixin
 
-    def __init__(self, last_modified_field: str):
+    def __init__(self, last_modified_field: str = 'modified'):
         self.last_modified_field = last_modified_field
 
     def value(self, view: MultipleObjectMixin) -> Optional[datetime.datetime]:

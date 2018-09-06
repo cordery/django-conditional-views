@@ -87,11 +87,14 @@ class ConditionalGetMixin(View):
 
         :return: The calculated ETag or None
         """
-        if not isinstance(response, SimpleTemplateResponse):
-            return None
-
         if not self.post_render_etag_elements:
             return None
+
+        if not hasattr(response, 'render'):
+            return None
+
+        # Render the response
+        response.render()
 
         elements = [x(self, response) for x in instantiate(self.post_render_etag_elements)]
         return self._render_etag_elements(elements)
@@ -104,8 +107,10 @@ class ConditionalGetMixin(View):
             return None
         return hashlib.md5(b''.join(elements)).hexdigest()
 
-    def set_response_headers(self, response: SimpleTemplateResponse, etag: str = None,
-                             last_modified: Union[int, datetime] = None) -> SimpleTemplateResponse:
+    def set_response_headers(self, response: SimpleTemplateResponse,
+                             etag: str = None,
+                             last_modified: Union[int, float, datetime] = None
+                             ) -> SimpleTemplateResponse:
         # language=rst prefix="    "
         """Sets the Etag and Last-Modified headers on the response
 
@@ -117,12 +122,10 @@ class ConditionalGetMixin(View):
         :return: The response with the headers added.
         """
         if etag:
-            response['Etag'] = etag
+            response['Etag'] = self._format_etag(etag)
 
         if last_modified:
-            if isinstance(last_modified, int):
-                last_modified = http_date(last_modified)
-            response['Last-Modified'] = last_modified
+            response['Last-Modified'] = self._format_last_modified(last_modified)
         return response
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -143,10 +146,10 @@ class ConditionalGetMixin(View):
         If no conditional response will be sent, the Last-Modified and Etag headers for the
         current response are set and the response is returned.
         """
-        last_modified = self._format_last_modified(self.get_last_modified())
+        last_modified = self._prep_last_modified(self.get_last_modified())
 
         # 1. Try to get an etag from the pre_render_etag method
-        etag = self._format_etag(self.get_pre_render_etag())
+        etag = self._prep_etag(self.get_pre_render_etag())
 
         # 2. Try to generate a conditional response given the last_modified and pre_render_etag.
         # If possible, return an abbreviated conditional response using the last_modified and
@@ -192,17 +195,31 @@ class ConditionalGetMixin(View):
             last_modified=last_modified,
         )
 
-    def _format_etag(self, etag: Optional[str]):
-        """Formats the results of get_post_render_etag"""
+    def _prep_etag(self, etag: Optional[str]):
+        """Prep etag for the conditional check phase"""
+        return self._format_etag(etag)
+
+    @staticmethod
+    def _format_etag(etag: Optional[str]):
+        """Format etag for the http header"""
         if not etag:
             return None
         return quote_etag(etag)
 
-    def _format_last_modified(self, last_modified: Optional[datetime]):
-        """Formats the results of get_last_modified"""
+    @staticmethod
+    def _prep_last_modified(last_modified: Optional[datetime]):
+        """Prep last_modified for the conditional check phase"""
         if not last_modified:
             return None
         return timegm(last_modified.utctimetuple())
+
+    def _format_last_modified(self, last_modified: Union[int, float, datetime, None]):
+        """Format the results of get_last_modified for the http header"""
+        if not last_modified:
+            return None
+        if isinstance(last_modified, datetime):
+            last_modified = self._prep_last_modified(last_modified)
+        return http_date(last_modified)
 
 
 class ConditionalGetTemplateViewMixin(TemplateResponseMixin, ConditionalGetMixin):
@@ -218,7 +235,7 @@ class ConditionalGetTemplateViewMixin(TemplateResponseMixin, ConditionalGetMixin
     post_render_etag_elements = [RenderedContentEtag]
 
 
-class ConditionalGetDetailViewMixin(ConditionalGetTemplateViewMixin, DetailView):
+class ConditionalGetDetailViewMixin(ConditionalGetMixin, DetailView):
     # language=rst prefix="    "
     """Conditional Request/Response aware mixin for DetailView
 
@@ -234,18 +251,13 @@ class ConditionalGetDetailViewMixin(ConditionalGetTemplateViewMixin, DetailView)
     def get_last_modified(self):
         # TemplateLastModified requires that object exist
         self.object = super().get_object()
-        self.last_modified_elements = [TemplateLastModified,
-                                       ObjectLastModified(self.last_modified_field)]
+        self.last_modified_elements = self.last_modified_elements or []
+        self.last_modified_elements.extend([TemplateLastModified,
+                                            ObjectLastModified(self.last_modified_field)])
         return super().get_last_modified()
 
-    def get_object(self, queryset=None):
-        """Wraps get_object to use the existing object if it has already been retrieved."""
-        if hasattr(self, 'object') and self.object:
-            return self.object
-        return super().get_object(queryset=queryset)
 
-
-class ConditionalGetListViewMixin(ConditionalGetTemplateViewMixin, ListView):
+class ConditionalGetListViewMixin(ConditionalGetMixin, ListView):
     # language=rst prefix="    "
     """Conditional Request/Response aware mixin for ListView
 
@@ -260,12 +272,7 @@ class ConditionalGetListViewMixin(ConditionalGetTemplateViewMixin, ListView):
     def get_last_modified(self):
         # TemplateLastModified requires that object_list exist
         self.object_list = super().get_queryset()
-        self.last_modified_elements = [TemplateLastModified,
-                                       QuerySetLastModified(self.last_modified_field)]
+        self.last_modified_elements = self.last_modified_elements or []
+        self.last_modified_elements.extend([TemplateLastModified,
+                                            QuerySetLastModified(self.last_modified_field)])
         return super().get_last_modified()
-
-    def get_queryset(self):
-        """Wrapper for get_queryset that caches the queryset."""
-        if not hasattr(self, 'object_list'):
-            self.object_list = super().get_queryset()
-        return self.object_list

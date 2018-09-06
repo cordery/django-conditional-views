@@ -14,4 +14,6 @@ class RenderedContentEtag(BaseEtagPostRenderElement):
 
     def value(self, view: TemplateResponseMixin,
               response: SimpleTemplateResponse) -> Optional[str]:
+        if not response.is_rendered:
+            response.render()
         return response.content
