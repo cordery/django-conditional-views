@@ -2,18 +2,21 @@ Django Conditional Views
 ########################
 
 .. image:: https://circleci.com/gh/cordery/django-conditional-views.svg?style=svg
-    :target: https://circleci.com/gh/cordery/django-conditional-views
+  :target: https://circleci.com/gh/cordery/django-conditional-views
+  :alt: Build Status
 
 
 .. image:: https://codecov.io/gh/cordery/django-conditional-views/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/cordery/django-conditional-views
+  :alt: Test Coverage
 
 
 .. image:: https://readthedocs.org/projects/django-conditional-views/badge/?version=latest
   :target: https://django-conditional-views.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
-.. image:: https://img.shields.io/github/license/cordery/django-conditional-views.svg   :alt: MIT License
+.. image:: https://img.shields.io/github/license/cordery/django-conditional-views.svg
+  :alt: MIT License
 
 Simple ETag and Last-Modified mixins for class based views.
 
