@@ -13,6 +13,8 @@ Django Conditional Views
   :target: https://django-conditional-views.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
+.. image:: https://img.shields.io/github/license/cordery/django-conditional-views.svg   :alt: MIT License
+
 Simple ETag and Last-Modified mixins for class based views.
 
 
